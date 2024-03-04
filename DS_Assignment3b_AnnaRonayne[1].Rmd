@@ -1,0 +1,92 @@
+---
+title: "DS_Assignment3b_AnnaRonayne"
+author: "Anna Ronayne"
+date: "2024-02-29"
+output: html_document
+---
+```{r installing packages}
+install.packages("ggplot2")
+library(ggplot2)
+library(dplyr)
+library(readr)
+```
+
+
+```{r Reading in Data}
+SNP2016 <- read.csv("Python Scripts/Poverty Data/EDGE_SIDE1216_PUBSCHS1516.csv")
+SNP2017 <- read.csv("Python Scripts/Poverty Data/EDGE_SIDE1317_PUBSCHS1617.csv")
+SNP2018 <- read.csv("Python Scripts/Poverty Data/EDGE_SIDE1519_PUBSCHS1819.csv")
+SNP2019 <- read.csv("Python Scripts/Poverty Data/EDGE_SIDE1519_PUBSCHS1819.csv")
+SNP2020 <- read.csv("Python Scripts/Poverty Data/EDGE_SIDE1620_PUBSCHS1920.csv")
+SNP2021 <- read.csv("Python Scripts/Poverty Data/EDGE_SIDE1721_PUBSCHS2021.csv")
+tail(SNP2016)
+#View(EDGE_SIDE1519_PUBSCHS1819)
+
+```
+
+
+```{r Organizing Data and Boxplot}
+
+SNP2021$year <- "2021"
+SNP2020$year <- "2020"
+SNP2019$year <- "2019"
+SNP2018$year <- "2018"
+SNP2017$year <- "2017"
+SNP2016$year <- "2016"
+
+SNP2021$source <- "data1"
+SNP2020$source <- "data2"
+SNP2019$source <- "data3"
+SNP2018$source <- "data4"
+SNP2017$source <- "data5"
+SNP2016$source <- "data6"
+
+# Combine the datasets
+combined_data <- rbind(SNP2021, SNP2020)
+combined_data2 <- rbind(SNP2018,SNP2019)
+combined_data3 <- rbind(SNP2017,SNP2016)
+combined_data <- rbind(combined_data,combined_data2)
+combined_data <- rbind(combined_data,combined_data3)
+
+# Plot
+ggplot(combined_data, aes(x = year, y = IPR_EST, fill = factor(year))) +
+  geom_boxplot(position = position_dodge(width = 0.75)) +
+  theme_minimal() +
+  labs(title = "Box Plot Comparison", x = "Year", y = "IPR_EST")
+
+ggplot(combined_data, aes(x = year, y = IPR_SE, fill = factor(year))) +
+  geom_boxplot(position = position_dodge(width = 0.75)) +
+  theme_minimal() +
+  labs(title = "Box Plot Comparison", x = "Year", y = "IPR_SE")
+
+
+```
+
+
+```{r Summaries}
+# summary statistics per year
+summary_data <- aggregate(IPR_EST ~ year, data = combined_data, FUN = summary)
+summary_dataSE <- aggregate(IPR_SE ~ year, data = combined_data, FUN = summary)
+View(summary_data)
+View(summary_dataSE)
+```
+
+```{r Histograms}
+# Histogram for IPR_EST
+ggplot(combined_data, aes(x = IPR_EST, fill = factor(year))) +
+  geom_histogram(position = "dodge", bins = 20, color = "black") +
+  theme_minimal() +
+  labs(title = "Histogram of IPR_EST", x = "IPR_EST", y = "Frequency")
+
+# Histogram for IPR_SE
+ggplot(combined_data, aes(x = IPR_SE, fill = factor(year))) +
+  geom_histogram(position = "dodge", bins = 20, color = "black") +
+  theme_minimal() +
+  labs(title = "Histogram of IPR_SE", x = "IPR_SE", y = "Frequency")
+
+```
+
+
+
+
+
